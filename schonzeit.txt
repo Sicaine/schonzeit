@@ -1,0 +1,102 @@
+Alpenschneehuhn	keine	
+Auerwild	keine	
+Baummarder	16.10.-28.02.	
+Biber	01.09.-15.03.	(4)
+Birkwild	keine	
+Blässhuhn	11.09.-20.02.	
+Dachs	01.08.-31.10.	
+Damwild (Alttiere)	01.09.-31.01.	
+Damwild (Hirsche)	01.09.-31.01.	
+Damwild (Kälber)	01.09.-31.01.	
+Damwild (Schmalspießer)	01.07.-31.01.	
+Damwild (Schmaltiere)	01.07.-31.01.	
+Eichelhäher	16.07.-14.03.	
+Elchwild	keine	
+Elster	16.07.-14.03.	
+Falken	keine	
+Fasan	01.10.-31.12.	
+Feldhase	16.10.-31.12.	
+Fischotter	01.01.-31.12.	(2)
+Fuchs	01.01.-31.12.	
+Gamswild	01.08.-15.12.	
+Graureiher	16.09.-31.10.	(5)
+Greife	keine	
+Großtrappe	keine	
+Haselwild	keine	
+Haubentaucher	keine	
+Hermelin	01.08.-28.02.	
+Höckerschwan	01.11.-20.02.	
+Iltis	01.08.-28.02.	
+Kolkrabe	keine	
+Kormoran	16.08.-14.03.	(6)
+Luchs	keine	
+Marderhund	01.01.-31.12.	(3)
+Mauswiesel	01.08.-28.02.	
+Möwen (Heringsmöwe)	01.10.-10.02.	
+Möwen (Lachmöwe)	01.10.-10.02.	
+Möwen (Mantelmöwe)	01.10.-10.02.	
+Möwen (Silbermöwe)	01.10.-10.02.	
+Möwen (Sturmmöwe)	01.10.-10.02.	
+Muffelwild	01.08.-31.01.	
+Murmeltier	keine	
+Nutria	01.01.-31.12.	(3)
+Rabenkrähe	16.07.-14.03.	
+Rackelwild	keine	
+Rebhuhn	01.09.-31.10.	
+Rehwild (Böcke)	01.05.-15.10.	
+Rehwild (Geißen)	01.09.-15.01.	
+Rehwild (Kitze)	01.09.-15.01.	
+Rehwild (Schmalrehe)	01.05.-15.01.	
+Rotwild (Alttiere)	01.08.-31.01.	
+Rotwild (Hirsche)	01.08.-31.01.	
+Rotwild (Kälber)	01.08.-31.01.	
+Rotwild (Schmalspießer)	01.06.-31.01.	
+Rotwild (Schmaltiere)	01.06.-31.01.	
+Säger	keine	
+Schneehase	keine	
+Schwarzwild (Bachen)	01.01.-31.12.	
+Schwarzwild (Frischlinge)	01.01.-31.12.	
+Schwarzwild (Keiler)	01.01.-31.12.	
+Schwarzwild (Überläufer)	01.01.-31.12.	
+Seehund	keine	
+Sikawild (Alttiere)	01.09.-31.01.	
+Sikawild (Hirsche)	01.09.-31.01.	
+Sikawild (Kälber)	01.09.-31.01.	
+Sikawild (Schmalspießer)	01.07.-31.01.	
+Sikawild (Schmaltiere)	01.07.-31.01.	
+Steinmarder	16.10.-28.02.	
+Steinwild	keine	
+Wachtel	keine	
+Waldschnepfe	16.10.-15.01.	
+Waschbär	01.01.-31.12.	(3)
+Wildenten (Bergente)	01.10.-15.01.	
+Wildenten (Krickente)	01.10.-15.01.	
+Wildenten (Pfeifente)	01.10.-15.01.	
+Wildenten (Reiherente)	01.10.-15.01.	
+Wildenten (Samtente)	01.10.-15.01.	
+Wildenten (Spießente)	01.10.-15.01.	
+Wildenten (Stockente)	01.09.-15.01.	
+Wildenten (Tafelente)	01.10.-15.01.	
+Wildenten (Trauerente)	01.10.-15.01.	
+Wildgänse (Blässgans)	01.11.-15.01.	
+Wildgänse (Graugans)	01.08.-15.01.	
+Wildgänse (Kanadagans)	01.08.-15.01.	
+Wildgänse (Nilgans)	01.08.-15.01.	
+Wildgänse (Ringelgans)	01.11.-15.01.	
+Wildgänse (Saatgans)	01.11.-15.01.	
+Wildkaninchen	01.01.-31.12.	(1)
+Wildkatze	keine	
+Wildtauben (Ringeltaube)	01.11.-20.02.	
+Wildtauben (Türkentaube)	01.11.-20.02.	
+Wildtruthuhn (Wildtruthähne)	15.03.-15.05. u. 01.10.-15.01.	
+Wildtruthuhn (Wildtruthennen)	01.10.-15.01.	
+Wisent	keine
+
+
+
+Die Jagd ist auch in der Setzzeit erlaubt. (§ 19 Abs. 1 Satz 3 AVBayJG)
+§ 3 der AAV muss berücksichtigt werden.
+Ergänzung zu § 1 Abs. 2 der Bundesverordnung (JagdzeitV 1977). (AVBayJG § 2 Satz 2) Für Waschbär und Marderhund gilt zudem, dass die Jagd auch in der Setzzeit erlaubt ist. (§ 19 Abs. 1 Satz 3 AVBayJG)
+Der Biber ist nicht im BayJG und in der AVBayJG zu finden, aber aufgrund der AAV gibt es eine Ausnahmeregelung für die Jagd auf den Biber in Bayern. Die genauen rechtlichen Vorgaben für die Jagd auf den Biber sind § 2 AAV zu entnehmen.
+Ausschließlich in einem Umkreis von 200 m um geschlossene Gewässer erlaubt. Die genauen Regeln sind der AVBayJG zu entnehmen. (§ 19 Abs. 2 AVBayJG)         
+Der Kormoran ist nicht im BayJG und im AVBayJG zu finden, aber die Tötung ist trotzdem erlaubt auf Basis der AAV. Allerdings gibt es einige Einschränkungen. Insbesondere darf die Jagd maximal 200 Meter von einem Gewässer entfernt stattfinden. § 1 der AAV regelt die Details zur Kormoran-Jagd.
