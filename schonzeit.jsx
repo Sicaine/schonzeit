@@ -4,8 +4,6 @@ const MONTHS = ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","No
 const MONTH_DAYS = [31,28,31,30,31,30,31,31,30,31,30,31];
 
 function hIdx(m, d) { return (m - 1) * 2 + (d > 15 ? 1 : 0); }
-function hStart(i) { const m = Math.floor(i / 2) + 1; const h = i % 2; return { m, d: h === 0 ? 1 : 16 }; }
-function hEnd(i) { const m = Math.floor(i / 2) + 1; const h = i % 2; return { m, d: h === 0 ? 15 : MONTH_DAYS[m - 1] }; }
 
 function isActive(seasons, idx) {
   if (!seasons || seasons.length === 0) return false;
@@ -24,28 +22,6 @@ function gridFromSeasons(seasons, yearRound) {
   const g = new Array(24).fill(false);
   for (let i = 0; i < 24; i++) g[i] = isActive(seasons, i);
   return g;
-}
-
-function gridToSeasons(grid) {
-  const seasons = [];
-  let i = 0;
-  while (i < 24) {
-    if (grid[i]) {
-      let j = i;
-      while (j < 24 && grid[j]) j++;
-      const s = hStart(i);
-      const e = hEnd(j - 1);
-      seasons.push({ fm: s.m, fd: s.d, tm: e.m, td: e.d });
-      i = j;
-    } else { i++; }
-  }
-  if (seasons.length >= 2 && grid[0] && grid[23]) {
-    const last = seasons[seasons.length - 1];
-    const first = seasons[0];
-    seasons[seasons.length - 1] = { fm: last.fm, fd: last.fd, tm: first.tm, td: first.td };
-    seasons.shift();
-  }
-  return seasons;
 }
 
 function seasonsToStr(seasons) {
@@ -104,9 +80,9 @@ function getDefaultData() {
   const N5 = "Ausschließlich in einem Umkreis von 200 m um geschlossene Gewässer erlaubt. Die genauen Regeln sind der AVBayJG zu entnehmen. (§ 19 Abs. 2 AVBayJG)";
   const N6 = "Der Kormoran ist nicht im BayJG und im AVBayJG zu finden, aber die Tötung ist trotzdem erlaubt auf Basis der AAV. Insbesondere darf die Jagd maximal 200 Meter von einem Gewässer entfernt stattfinden. § 1 der AAV regelt die Details.";
   // Helper: a = animal factory
-  const a = (names, yr, seasons, note) => ({
+  const a = (names, yr, seasons, note, exam) => ({
     id: uid(), names: Array.isArray(names) ? names : [names],
-    yearRound: yr, seasons: seasons || [], note: note || null, exam: false,
+    yearRound: yr, seasons: seasons || [], note: note || null, exam: !!exam,
   });
   const S = (fm,fd,tm,td) => [{ fm, fd, tm, td }];
   const S2 = (fm1,fd1,tm1,td1,fm2,fd2,tm2,td2) => [{ fm:fm1, fd:fd1, tm:tm1, td:td1 },{ fm:fm2, fd:fd2, tm:tm2, td:td2 }];
@@ -119,8 +95,8 @@ function getDefaultData() {
         id: uid(), name: "Schalenwild",
         groups: [
           { id: uid(), name: "Rehwild", animals: [
-            a("Böcke", null, S(5,1,10,15)),
-            a("Schmalrehe", null, S(5,1,1,15)),
+            a("Böcke", null, S(5,1,10,15), null, true),
+            a("Schmalrehe", null, S(5,1,1,15), null, true),
             a("Geißen", null, S(9,1,1,15)),
             a("Kitze", null, S(9,1,1,15)),
           ]},
@@ -129,14 +105,14 @@ function getDefaultData() {
             a("Schmalspießer", null, S(6,1,1,31)),
             a("Schmaltiere", null, S(6,1,1,31)),
             a("Alttiere", null, S(8,1,1,31)),
-            a("Kälber", null, S(8,1,1,31)),
+            a("Kälber", null, S(8,1,1,31), null, true),
           ]},
           { id: uid(), name: "Damwild", animals: [
-            a("Hirsche", null, S(9,1,1,31)),
-            a("Schmalspießer", null, S(7,1,1,31)),
-            a("Schmaltiere", null, S(7,1,1,31)),
-            a("Alttiere", null, S(9,1,1,31)),
-            a("Kälber", null, S(9,1,1,31)),
+            a("Hirsche", null, S(9,1,1,31), null, true),
+            a("Schmalspießer", null, S(7,1,1,31), null, true),
+            a("Schmaltiere", null, S(7,1,1,31), null, true),
+            a("Alttiere", null, S(9,1,1,31), null, true),
+            a("Kälber", null, S(9,1,1,31), null, true),
           ]},
           { id: uid(), name: "Sikawild", animals: [
             a("Hirsche", null, S(9,1,1,31)),
@@ -146,7 +122,7 @@ function getDefaultData() {
             a("Kälber", null, S(9,1,1,31)),
           ]},
           { id: uid(), name: "Gamswild", animals: [
-            a("Gamswild", null, S(8,1,12,15)),
+            a("Gamswild", null, S(8,1,12,15), null, true),
           ]},
           { id: uid(), name: "Muffelwild", animals: [
             a("Muffelwild", null, S(8,1,1,31)),
@@ -155,7 +131,7 @@ function getDefaultData() {
             a("Keiler", "hunting", null),
             a("Bachen", "hunting", null),
             a("Überläufer", "hunting", null),
-            a("Frischlinge", "hunting", null),
+            a("Frischlinge", "hunting", null, null, true),
           ]},
         ]
       },
@@ -164,14 +140,15 @@ function getDefaultData() {
         id: uid(), name: "Raubwild",
         groups: [
           { id: uid(), name: "Fuchs", animals: [
-            a("Fuchs", "hunting", null),
+            a("Fuchs", "hunting", null, null, true),
           ]},
           { id: uid(), name: "Dachs", animals: [
-            a("Dachs", null, S(8,1,10,31)),
+            a("Dachs", null, S(8,1,10,31), null, true),
           ]},
           { id: uid(), name: "Marder", animals: [
-            a("Baummarder", null, S(10,16,2,28)),
-            a("Steinmarder", null, S(10,16,2,28)),
+            a("Baummarder", null, S(10,16,2,28), null, true),
+            a("Steinmarder", null, S(10,16,2,28), null, true),
+                a("Mink (Amerikaner Nerz", null, S(1,1,12,31), null, true)
           ]},
           { id: uid(), name: "Kleine Raubsäuger", animals: [
             a("Hermelin", null, S(8,1,2,28)),
@@ -198,7 +175,7 @@ function getDefaultData() {
         id: uid(), name: "Niederwild",
         groups: [
           { id: uid(), name: "Feldhase", animals: [
-            a("Feldhase", null, S(10,16,12,31)),
+            a("Feldhase", null, S(10,16,12,31), null, true),
           ]},
           { id: uid(), name: "Wildkaninchen", animals: [
             a("Wildkaninchen", "hunting", null, N1),
@@ -213,8 +190,8 @@ function getDefaultData() {
         id: uid(), name: "Federwild – Enten",
         groups: [
           { id: uid(), name: "Wildenten", animals: [
-            a("Stockente", null, S(9,1,1,15)),
-            a("Krickente", null, S(10,1,1,15)),
+            a("Stockente", null, S(9,1,1,15), null, true),
+            a("Krickente", null, S(10,1,1,15), null, true),
             a("Pfeifente", null, S(10,1,1,15)),
             a("Spießente", null, S(10,1,1,15)),
             a("Bergente", null, S(10,1,1,15)),
@@ -229,8 +206,8 @@ function getDefaultData() {
         id: uid(), name: "Federwild – Gänse",
         groups: [
           { id: uid(), name: "Wildgänse", animals: [
-            a("Graugans", null, S(8,1,1,15)),
-            a("Kanadagans", null, S(8,1,1,15)),
+            a("Graugans", null, S(8,1,1,15), null, true),
+            a("Kanadagans", null, S(8,1,1,15), null, true),
             a("Nilgans", null, S(8,1,1,15)),
             a("Blässgans", null, S(11,1,1,15)),
             a("Ringelgans", null, S(11,1,1,15)),
@@ -242,10 +219,10 @@ function getDefaultData() {
         id: uid(), name: "Federwild – Hühnervögel",
         groups: [
           { id: uid(), name: "Fasan", animals: [
-            a("Fasan", null, S(10,1,12,31)),
+            a("Fasan", null, S(10,1,12,31), null, true),
           ]},
           { id: uid(), name: "Rebhuhn", animals: [
-            a("Rebhuhn", null, S(9,1,10,31)),
+            a("Rebhuhn", null, S(9,1,10,31), null, true),
           ]},
           { id: uid(), name: "Wildtruthuhn", animals: [
             a("Wildtruthähne", null, S2(3,15,5,15, 10,1,1,15)),
@@ -257,7 +234,7 @@ function getDefaultData() {
         id: uid(), name: "Federwild – Tauben",
         groups: [
           { id: uid(), name: "Wildtauben", animals: [
-            a("Ringeltaube", null, S(11,1,2,20)),
+            a("Ringeltaube", null, S(11,1,2,20), null, true),
             a("Türkentaube", null, S(11,1,2,20)),
           ]},
         ]
@@ -266,7 +243,7 @@ function getDefaultData() {
         id: uid(), name: "Federwild – Sonstige",
         groups: [
           { id: uid(), name: "Waldschnepfe", animals: [
-            a("Waldschnepfe", null, S(10,16,1,15)),
+            a("Waldschnepfe", null, S(10,16,1,15), null, true),
           ]},
           { id: uid(), name: "Möwen", animals: [
             a("Lachmöwe", null, S(10,1,2,10)),
@@ -276,7 +253,7 @@ function getDefaultData() {
             a("Mantelmöwe", null, S(10,1,2,10)),
           ]},
           { id: uid(), name: "Blässhuhn", animals: [
-            a("Blässhuhn", null, S(9,11,2,20)),
+            a("Blässhuhn", null, S(9,11,2,20), null, true),
           ]},
           { id: uid(), name: "Graureiher", animals: [
             a("Graureiher", null, S(9,16,10,31), N5),
@@ -314,8 +291,8 @@ function getDefaultData() {
             a("Fischotter (Ausnahme Schaeden)", "protected", null, N2),
           ]},
           { id: uid(), name: "Niederwild", animals: [
-            a("Schneehase", "protected", null),
-            a("Murmeltier", "protected", null),
+            a("Schneehase", "protected", null, null, true),
+            a("Murmeltier", "protected", null, null, true),
             a("Seehund", "protected", null),
           ]},
           { id: uid(), name: "Greifvögel", animals: [
@@ -324,17 +301,20 @@ function getDefaultData() {
           ]},
           { id: uid(), name: "Hühnervögel", animals: [
             a("Auerwild", "protected", null),
-            a("Birkwild", "protected", null),
+            a("Birkwild", "protected", null, null, true),
             a("Rackelwild", "protected", null),
-            a("Haselwild", "protected", null),
+            a("Haselwild", "protected", null, null, true),
             a("Alpenschneehuhn", "protected", null),
           ]},
           { id: uid(), name: "Sonstige", animals: [
-            a("Kolkrabe", "protected", null),
+            a("Kolkrabe", "protected", null, null, true),
             a("Haubentaucher", "protected", null),
             a("Säger", "protected", null),
             a("Großtrappe", "protected", null),
-            a("Wachtel", "protected", null),
+              a("Wachtel", "protected", null, null, true),
+              a("Habicht", "protected", null, null, true),
+              a("Silberreiher", "protected", null, null, true),
+              a("Kolbenente", "protected", null, null, true),
           ]},
         ]
       },
@@ -343,7 +323,6 @@ function getDefaultData() {
 }
 
 function displayName(a) { return a.names.join(", "); }
-function isCombined(a) { return a.names.length > 1; }
 
 function toExportJSON(data) {
   return {
@@ -519,7 +498,7 @@ const css = `
   }
   .exam-icon {
     display: inline-block; font-size: 7px; font-weight: 800;
-    background: #305a8a; color: #fff; border-radius: 2px;
+    background: #800020; color: #fff; border-radius: 2px;
     padding: 0 2px; margin-right: 2px; vertical-align: middle;
     line-height: 1.4; letter-spacing: 0.3px;
   }
@@ -534,8 +513,6 @@ const css = `
     font-weight: 600; color: #fff; vertical-align: middle;
   }
   .cell.protected-cell { background: var(--protect-bg); }
-  .cell.editable { cursor: pointer; }
-  .cell.editable:hover { opacity: 0.8; }
   .cell .date-label {
     position: absolute; inset: 0; display: flex; align-items: center;
     justify-content: center; font-size: calc(var(--cell-h) * 0.9); font-weight: 700;
@@ -558,29 +535,6 @@ const css = `
     letter-spacing: 0.5px; white-space: nowrap;
   }
 
-  .edit-animal-name {
-    width: 100%; border: none; background: #fffde8;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 11px;
-    font-weight: 500; padding: 0 3px; outline: none;
-  }
-  .edit-grp-name {
-    width: 100%; border: none; background: #fffde8;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 11px;
-    font-weight: 600; padding: 0 4px; outline: none;
-  }
-
-  .add-btn {
-    font-size: 10px; color: var(--hunt); cursor: pointer; padding: 0 4px;
-    background: none; border: none; font-weight: 600;
-    font-family: 'Barlow Condensed', sans-serif;
-  }
-  .add-btn:hover { text-decoration: underline; }
-  .del-btn {
-    font-size: 10px; color: #c44; cursor: pointer; padding: 0 2px;
-    background: none; border: none; font-weight: 600;
-  }
-  .del-btn:hover { color: #a00; }
-
   .yr-toggle {
     font-size: 9px; cursor: pointer; padding: 1px 3px; border-radius: 2px;
     border: 1px solid var(--border); background: #fff;
@@ -590,32 +544,6 @@ const css = `
   .yr-toggle:hover { background: #f0f0f0; }
   .yr-toggle.is-hunting { background: var(--hunt); color: #fff; border-color: var(--hunt); }
   .yr-toggle.is-protected { background: #d47070; color: #fff; border-color: #d47070; }
-
-  .split-btn {
-    font-size: 8px; cursor: pointer; padding: 0px 3px; border-radius: 2px;
-    border: 1px solid #c9b87a; background: #fdf8e8; color: #8a7530;
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
-    flex-shrink: 0; white-space: nowrap;
-  }
-  .split-btn:hover { background: #f5edcc; }
-
-  .sel-cb {
-    width: 11px; height: 11px; cursor: pointer; accent-color: var(--hunt);
-    flex-shrink: 0; margin: 0;
-  }
-
-  .combine-bar {
-    display: flex; gap: 8px; align-items: center; padding: 6px 12px;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 12px;
-    color: #305a8a; background: #e8f0fd; border: 1px solid #7aa0c9;
-    border-radius: 6px; margin-bottom: 6px;
-  }
-  .combine-bar button { font-family: 'Barlow Condensed', sans-serif; cursor: pointer; }
-  .combine-btn {
-    font-size: 12px; padding: 3px 10px; border-radius: 4px;
-    border: 1px solid #5080b0; background: #305a8a; color: #fff; font-weight: 600;
-  }
-  .combine-btn:hover { background: #24476e; }
 
   .modal-overlay {
     position: fixed; inset: 0; background: rgba(0,0,0,0.4);
@@ -781,7 +709,7 @@ const css = `
   @media print {
     @page { size: landscape; margin: 6mm; }
     .pb-section { break-after: page; page-break-after: always; }
-    .toolbar, .no-print, .combine-bar, .editor-view { display: none !important; }
+    .toolbar, .no-print, .editor-view { display: none !important; }
     .app { padding: 0; max-width: none; }
     .poster { border: none !important; border-radius: 0; }
     .poster-title { font-size: 14px; padding: 6px 10px 4px; color: #000 !important; border-color: #000 !important; }
@@ -809,14 +737,12 @@ const css = `
     .protected-label { color: #888 !important; }
     .protected-cell { background: #fff !important; }
     .apr-start { border-left: 2px solid #000 !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-    .sel-cb { display: none !important; }
     .footer-note { border-color: #ccc !important; color: #666 !important; }
   }
 `;
 
 export default function SchonzeitApp() {
   const [data, setData] = useState(getDefaultData);
-  const [editMode, setEditMode] = useState(false);
   const [viewMode, setViewMode] = useState("poster");
   const [sortMode, setSortMode] = useState("default");
   const [printMode, setPrintMode] = useState(false);
@@ -824,7 +750,6 @@ export default function SchonzeitApp() {
   const [showImport, setShowImport] = useState(false);
   const [importText, setImportText] = useState("");
   const [importError, setImportError] = useState("");
-  const [selected, setSelected] = useState(new Set());
   const fileRef = useRef();
 
   const huntColor = data.huntingColor || "#3a7d32";
@@ -948,16 +873,6 @@ export default function SchonzeitApp() {
     });
   }, []);
 
-  // Toggle a specific half-month index in the 24-slot grid
-  const toggleHalf = useCallback((animalId, halfIdx) => {
-    updateAnimal(animalId, a => {
-      if (a.yearRound) return a;
-      const grid = gridFromSeasons(a.seasons, a.yearRound);
-      grid[halfIdx] = !grid[halfIdx];
-      return { ...a, seasons: gridToSeasons(grid) };
-    });
-  }, [updateAnimal]);
-
   const cycleYearRound = useCallback((animalId) => {
     updateAnimal(animalId, a => {
       const cycle = [null, "hunting", "protected"];
@@ -979,7 +894,6 @@ export default function SchonzeitApp() {
       ...g,
       animals: g.animals.filter(a => a.id !== animalId)
     }));
-    setSelected(prev => { const n = new Set(prev); n.delete(animalId); return n; });
   }, [updateGroup]);
 
   const addGroup = useCallback((catId) => {
@@ -987,7 +901,7 @@ export default function SchonzeitApp() {
       ...prev,
       categories: prev.categories.map(c =>
         c.id === catId
-          ? { ...c, groups: [...c.groups, { id: uid(), name: "Neue Gruppe", rank: nextRank(c.groups), animals: [{ id: uid(), names: ["Neu"], yearRound: null, seasons: [], note: null, rank: 100 }] }] }
+          ? { ...c, groups: [...c.groups, { id: uid(), name: "Neue Gruppe", rank: nextRank(c.groups), animals: [{ id: uid(), names: ["Neu"], yearRound: null, seasons: [], note: null, exam: false, rank: 100 }] }] }
           : c
       )
     }));
@@ -1000,53 +914,6 @@ export default function SchonzeitApp() {
         c.id === catId ? { ...c, groups: c.groups.filter(g => g.id !== groupId) } : c
       )
     }));
-  }, []);
-
-  const combineSelected = useCallback(() => {
-    if (selected.size < 2) return;
-    setData(prev => {
-      const next = { ...prev, categories: prev.categories.map(c => ({
-        ...c,
-        groups: c.groups.map(g => {
-          const inGroup = g.animals.filter(a => selected.has(a.id));
-          if (inGroup.length < 2) return g;
-          const first = inGroup[0];
-          const allNames = inGroup.flatMap(a => a.names);
-          const merged = { ...first, id: uid(), names: allNames };
-          const ids = new Set(inGroup.map(a => a.id));
-          let placed = false;
-          const newAnimals = [];
-          for (const a of g.animals) {
-            if (ids.has(a.id)) {
-              if (!placed) { newAnimals.push(merged); placed = true; }
-            } else { newAnimals.push(a); }
-          }
-          return { ...g, animals: newAnimals };
-        })
-      }))};
-      return next;
-    });
-    setSelected(new Set());
-  }, [selected]);
-
-  const splitAnimal = useCallback((groupId, animalId) => {
-    updateGroup(groupId, g => ({
-      ...g,
-      animals: g.animals.flatMap(a => {
-        if (a.id !== animalId || a.names.length <= 1) return [a];
-        return a.names.map(n => ({
-          id: uid(), names: [n], yearRound: a.yearRound, seasons: a.seasons.map(s => ({...s}))
-        }));
-      })
-    }));
-  }, [updateGroup]);
-
-  const toggleSelect = useCallback((id) => {
-    setSelected(prev => {
-      const n = new Set(prev);
-      if (n.has(id)) n.delete(id); else n.add(id);
-      return n;
-    });
   }, []);
 
   const handleExport = useCallback(() => {
@@ -1081,13 +948,6 @@ export default function SchonzeitApp() {
     e.target.value = "";
   }, []);
 
-  const toggleEditMode = useCallback(() => {
-    setEditMode(prev => {
-      if (prev) setSelected(new Set());
-      return !prev;
-    });
-  }, []);
-
   // ─── Build rows ────────────────────────────────────────────────
   function buildDefaultRows() {
     const allRows = [];
@@ -1100,9 +960,7 @@ export default function SchonzeitApp() {
         animals.forEach((a, ai) => {
           allRows.push({ type: "animal", cat, grp, animal: a, isFirst: ai === 0, span: ai === 0 ? animals.length : 0, isSingle });
         });
-        if (editMode) allRows.push({ type: "addAnimal", grp });
       }
-      if (editMode) allRows.push({ type: "addGroup", cat });
     }
     return allRows;
   }
@@ -1153,41 +1011,8 @@ export default function SchonzeitApp() {
     );
   }
 
-  function renderEditName(a, grpId) {
-    return (
-      <div style={{ display: "flex", alignItems: "center", gap: 2, minWidth: 0 }}>
-        <input type="checkbox" className="sel-cb"
-          checked={selected.has(a.id)}
-          onChange={() => toggleSelect(a.id)}
-          title="Zum Zusammenfassen auswählen"
-        />
-        <input className="edit-animal-name"
-          value={a.names.join(", ")}
-          style={{ flex: 1, minWidth: 0 }}
-          onChange={e => {
-            const newNames = e.target.value.split(",").map(s => s.trim()).filter(Boolean);
-            updateAnimal(a.id, x => ({ ...x, names: newNames.length > 0 ? newNames : ["?"] }));
-          }}
-          title="Komma-getrennt für mehrere Tiere in einer Zeile"
-        />
-        <button
-          className={`yr-toggle ${a.yearRound === "hunting" ? "is-hunting" : a.yearRound === "protected" ? "is-protected" : ""}`}
-          onClick={() => cycleYearRound(a.id)}
-          title="Normal → GJ Jagd → GJ Geschützt"
-        >
-          {a.yearRound === "hunting" ? "GJ" : a.yearRound === "protected" ? "⊘" : "—"}
-        </button>
-        {isCombined(a) && (
-          <button className="split-btn" onClick={() => splitAnimal(grpId, a.id)} title="In Einzelzeilen aufteilen">↔</button>
-        )}
-        <button className="del-btn" style={{ position: "static" }}
-          onClick={() => removeAnimal(grpId, a.id)}>×</button>
-      </div>
-    );
-  }
-
   // ─── 12-column cell rendering (one cell per month) ─────────────
-  function renderCells(animal, editable) {
+  function renderCells(animal) {
     const grid = gridFromSeasons(animal.seasons, animal.yearRound);
 
     if (animal.yearRound === "protected") {
@@ -1243,24 +1068,14 @@ export default function SchonzeitApp() {
         }
       }
 
-      // Click handler: in edit mode, clicking left half toggles h1, right toggles h2
-      const handleClick = editable ? (e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const halfIdx = x < rect.width / 2 ? mi * 2 : mi * 2 + 1;
-        toggleHalf(animal.id, halfIdx);
-      } : undefined;
-
       const labelClass = (h1 && h2) ? "on-green" : isGrad ? "on-mixed" : "";
-
       const fillClass = (h1 && h2) ? "cell-full" : (h1 && !h2) ? "cell-h1" : (!h1 && h2) ? "cell-h2" : "";
 
       return (
         <td
           key={mi}
-          className={`cell ${fillClass}${editable ? " editable" : ""}${mi === 3 ? " apr-start" : ""}`}
+          className={`cell ${fillClass}${mi === 3 ? " apr-start" : ""}`}
           style={{ background: bg }}
-          onClick={handleClick}
         >
           {label && (
             <div className={`date-label ${labelClass}`}>
@@ -1288,24 +1103,12 @@ export default function SchonzeitApp() {
           </div>
           <span style={{ fontSize: 12, color: "#888" }}>|</span>
           {viewMode === "poster" && (
-            <>
-              <button className={editMode ? "active" : ""} onClick={toggleEditMode}>
-                {editMode ? "✓ Bearbeiten" : "✎ Bearbeiten"}
-              </button>
-              <span style={{ fontSize: 12, color: "#888" }}>|</span>
-              <label style={{ display: "flex", alignItems: "center", gap: 4, border: "none", padding: 0 }}>
-                <span style={{ fontSize: 11 }}>Sortierung:</span>
-                <select value={sortMode} onChange={e => setSortMode(e.target.value)}>
-                  {SORT_MODES.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}
-                </select>
-              </label>
-              {editMode && (
-                <label style={{ display: "flex", alignItems: "center", gap: 4, border: "none", padding: 0 }}>
-                  <span style={{ fontSize: 11 }}>Farbe:</span>
-                  <input type="color" value={huntColor} onChange={e => setData(d => ({ ...d, huntingColor: e.target.value }))} />
-                </label>
-              )}
-            </>
+            <label style={{ display: "flex", alignItems: "center", gap: 4, border: "none", padding: 0 }}>
+              <span style={{ fontSize: 11 }}>Sortierung:</span>
+              <select value={sortMode} onChange={e => setSortMode(e.target.value)}>
+                {SORT_MODES.map(s => <option key={s.key} value={s.key}>{s.label}</option>)}
+              </select>
+            </label>
           )}
           <div className="spacer" />
           <button onClick={handleExport}>↓ Export</button>
@@ -1321,16 +1124,6 @@ export default function SchonzeitApp() {
           </button>
           <button onClick={() => window.print()}>🖨 Drucken</button>
         </div>
-
-        {editMode && selected.size >= 2 && (
-          <div className="combine-bar no-print">
-            <span style={{ fontWeight: 600 }}>{selected.size} Tiere ausgewählt</span>
-            <span style={{ fontSize: 10, color: "#5080b0" }}>(selbe Gruppe)</span>
-            <button className="combine-btn" onClick={combineSelected}>⊕ Zusammenfassen</button>
-            <button style={{ fontSize: 11, background: "none", border: "none", cursor: "pointer", color: "#7aa0c9", textDecoration: "underline" }}
-              onClick={() => setSelected(new Set())}>Aufheben</button>
-          </div>
-        )}
 
         {viewMode === "editor" && (
           <div className="editor-view">
@@ -1367,7 +1160,7 @@ export default function SchonzeitApp() {
                       <select className="editor-select" value={cat.id}
                         onChange={e => { if (e.target.value !== cat.id) moveGroupToCategory(grp.id, cat.id, e.target.value); }}
                         title="Gruppe in andere Kategorie verschieben">
-                        {sortedByRank(data.categories).map(c => (
+                        {sortedByRank(data.categories).filter(c => c.type !== "page-break").map(c => (
                           <option key={c.id} value={c.id}>{c.name}</option>
                         ))}
                       </select>
@@ -1418,7 +1211,7 @@ export default function SchonzeitApp() {
                           <select className="editor-select" value={grp.id}
                             onChange={e => { if (e.target.value !== grp.id) moveAnimalToGroup(a.id, grp.id, e.target.value); }}
                             title="Tier in andere Gruppe verschieben">
-                            {data.categories.flatMap(c => sortedByRank(c.groups).map(g => (
+                            {data.categories.filter(c => c.type !== "page-break").flatMap(c => sortedByRank(c.groups).map(g => (
                               <option key={g.id} value={g.id}>{c.name} › {g.name}</option>
                             )))}
                           </select>
@@ -1451,22 +1244,7 @@ export default function SchonzeitApp() {
         )}
 
         {viewMode === "poster" && <div className="poster">
-          {editMode ? (
-            <div className="poster-title" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <input
-                value={data.title}
-                onChange={e => setData(d => ({ ...d, title: e.target.value }))}
-                style={{
-                  flex: 1, border: "none", borderBottom: "1px dashed #aaa",
-                  background: "transparent", fontFamily: "'Barlow Condensed', sans-serif",
-                  fontWeight: 700, fontSize: 18, letterSpacing: "0.5px",
-                  textTransform: "uppercase", outline: "none"
-                }}
-              />
-            </div>
-          ) : (
-            <div className="poster-title">{data.title}</div>
-          )}
+          <div className="poster-title">{data.title}</div>
 
           <div className="legend">
             <div className="legend-item">
@@ -1522,65 +1300,40 @@ export default function SchonzeitApp() {
                     </tr>
                   );
                 }
-                if (row.type === "addAnimal") {
-                  return (
-                    <tr key={`add-${ri}`}>
-                      <td colSpan={colCount} style={{ textAlign: "left", padding: "1px 4px" }}>
-                        <button className="add-btn" onClick={() => addAnimal(row.grp.id)}>+ Tier hinzufügen</button>
-                      </td>
-                    </tr>
-                  );
-                }
-                if (row.type === "addGroup") {
-                  return (
-                    <tr key={`addg-${ri}`}>
-                      <td colSpan={colCount} style={{ textAlign: "left", padding: "1px 4px" }}>
-                        <button className="add-btn" onClick={() => addGroup(row.cat.id)}>+ Gruppe hinzufügen</button>
-                      </td>
-                    </tr>
-                  );
-                }
                 if (row.type === "animalFlat") {
                   const a = row.animal;
                   return (
                     <tr key={`af-${ri}`}>
                       <td className="grp-name">{row.grp}</td>
                       <td className="animal-name" title={displayName(a)}>
-                        {editMode ? renderEditName(a, row.grpId) : renderNames(a)}
+                        {renderNames(a)}
                       </td>
-                      {renderCells(a, editMode)}
+                      {renderCells(a)}
                     </tr>
                   );
                 }
                 const a = row.animal;
-                const mergeColumns = row.isSingle && !editMode;
                 return (
                   <tr key={`a-${ri}`}>
-                    {mergeColumns ? (
-                      <td className="animal-name" colSpan={2} style={{ textAlign: "center" }}>
-                        {row.grp.name || renderNames(a)}
+                    {row.isSingle ? (
+                      <td className="animal-name" colSpan={2} style={{ textAlign: "center", ...(a.exam ? { fontWeight: 700 } : {}) }}>
+                        {a.exam && <span className="exam-icon" title="Prüfungsrelevant">P</span>}
+                        {row.grp.name || displayName(a)}
+                        {a.note && <span title={a.note} style={{ cursor: "help", color: "var(--hunt)", fontSize: 8, verticalAlign: "super", marginLeft: 1 }}>*</span>}
                       </td>
                     ) : (
                       <>
                         {row.isFirst && row.span > 0 && (
-                          <td className="grp-name" rowSpan={row.span + (editMode ? 1 : 0)} style={{ position: "relative" }}>
-                            {editMode ? (
-                              <>
-                                <input className="edit-grp-name" value={row.grp.name}
-                                  onChange={e => updateGroup(row.grp.id, g => ({ ...g, name: e.target.value }))} />
-                                <button className="del-btn" title="Gruppe entfernen"
-                                  style={{ position: "absolute", top: 1, right: 1 }}
-                                  onClick={() => removeGroup(row.cat.id, row.grp.id)}>×</button>
-                              </>
-                            ) : row.grp.name}
+                          <td className="grp-name" rowSpan={row.span}>
+                            {row.grp.name}
                           </td>
                         )}
                         <td className="animal-name">
-                          {editMode ? renderEditName(a, row.grp.id) : renderNames(a)}
+                          {renderNames(a)}
                         </td>
                       </>
                     )}
-                    {renderCells(a, editMode)}
+                    {renderCells(a)}
                   </tr>
                 );
               })}
@@ -1590,7 +1343,6 @@ export default function SchonzeitApp() {
 
           <div className="footer-note">
             Angaben ohne Gewähr – Bitte aktuelle Verordnungen prüfen.
-            {editMode && <span> Bearbeiten: Linke Zellhälfte klicken = 1.–15., rechte = 16.–Monatsende.</span>}
           </div>
         </div>}
       </div>
