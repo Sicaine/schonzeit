@@ -88,7 +88,7 @@ function getDefaultData() {
   const S2 = (fm1,fd1,tm1,td1,fm2,fd2,tm2,td2) => [{ fm:fm1, fd:fd1, tm:tm1, td:td1 },{ fm:fm2, fd:fd2, tm:tm2, td:td2 }];
 
   return assignDefaultRanks({
-    title: "Jagd- und Schonzeiten Bayern",
+    title: "Jagd- und Schonzeiten Bayern (Stand Mai 2026)",
     huntingColor: "#3a7d32",
     categories: [
       {
