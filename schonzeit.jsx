@@ -95,8 +95,8 @@ function getDefaultData() {
         id: uid(), name: "Schalenwild",
         groups: [
           { id: uid(), name: "Rehwild", animals: [
-            a("Böcke", null, S(5,1,10,15), null, true),
-            a("Schmalrehe", null, S(5,1,1,15), null, true),
+            a("Böcke", null, S(4,16,10,15), null, true),
+            a("Schmalrehe", null, S(4,16,1,15), null, true),
             a("Geißen", null, S(9,1,1,15)),
             a("Kitze", null, S(9,1,1,15)),
           ]},
@@ -143,12 +143,14 @@ function getDefaultData() {
             a("Fuchs", "hunting", null, null, true),
           ]},
           { id: uid(), name: "Dachs", animals: [
-            a("Dachs", null, S(8,1,10,31), null, true),
+            a("Dachs juvenile", null, S(4,16,1,31), null, true),
+            a("Dachs", null, S(8,1,1,31), null, true),
           ]},
           { id: uid(), name: "Marder", animals: [
             a("Baummarder", null, S(10,16,2,28), null, true),
-            a("Steinmarder", null, S(10,16,2,28), null, true),
-                a("Mink (Amerikaner Nerz", null, S(1,1,12,31), null, true)
+            a("Steinmarder juvenile", null, S(6,1,2,28), null, true),
+            a("Steinmarder", null, S(8,1,2,28), null, true),
+            a("Mink (Amerikaner Nerz", null, S(1,1,12,31), null, true)
           ]},
           { id: uid(), name: "Kleine Raubsäuger", animals: [
             a("Hermelin", null, S(8,1,2,28)),
@@ -206,8 +208,10 @@ function getDefaultData() {
         id: uid(), name: "Federwild – Gänse",
         groups: [
           { id: uid(), name: "Wildgänse", animals: [
-            a("Graugans", null, S(8,1,1,15), null, true),
-            a("Kanadagans", null, S(8,1,1,15), null, true),
+            a("Graugans (jung, sitzend)", null, S(6,1,6,31), null, true),
+            a("Graugans", null, S(8,1,2,28), null, true),
+            a("Kanadagans (jung, sitzend)", null, S(6,1,6,31), null, true),
+            a("Kanadagans", null, S(8,1,2,28), null, true),
             a("Nilgans", null, S(8,1,1,15)),
             a("Blässgans", null, S(11,1,1,15)),
             a("Ringelgans", null, S(11,1,1,15)),
